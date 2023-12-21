@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.MenuItem;
@@ -42,15 +44,16 @@ public class MainPageActivity extends AppCompatActivity {
         chronometer = findViewById(R.id.chronometer);
         BottomNavigationView bottomNavigationView = findViewById(R.id.menu_bottom_navigation);
 
-        dbHelper = new DBHelper(this);
-
         // TODO : 로그인한 사용자의 userID 가져오기
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        String userID = sharedPreferences.getString("userID", "");
+        dbHelper = new DBHelper(this);
 
         // 체중저장 버튼 리스너
         saveWeightButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                saveWeight(); // TODO -> saveWeight(loggedUserID);
+                saveWeight(userID); // TODO -> saveWeight(loggedUserID);
             }
         });
 
@@ -77,7 +80,7 @@ public class MainPageActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveWalk(); // TODO -> saveWalk(loggedUserID);
+                saveWalk(userID); // TODO -> saveWalk(loggedUserID);
             }
         });
 
@@ -97,12 +100,10 @@ public class MainPageActivity extends AppCompatActivity {
 
                 switch (menuItem.getItemId()){
                     case R.id.menu_main:
-                        Intent intent = new Intent(getApplicationContext(), MainPageActivity.class);
-                        startActivity(intent);
                         break;
                     case R.id.menu_mypage:
                         // 마이페이지 화면으로 이동
-                        intent = new Intent(getApplicationContext(), MyPageActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
                         startActivity(intent);
                         break;
                     case R.id.menu_calendar:
@@ -118,7 +119,7 @@ public class MainPageActivity extends AppCompatActivity {
     }
 
     // TODO : 로그인한 사용자의 userID 가져와야함 -> private void saveWeight(String userID)
-    private void saveWeight(){
+    private void saveWeight(String userID){
 
         String weightStr = weightInput.getText().toString();
 
@@ -127,10 +128,10 @@ public class MainPageActivity extends AppCompatActivity {
 
                 double weight = Double.parseDouble(weightStr);
                 String currentDate = getCurrentDate();
-                String tempUserId = "tempUser";  // 임시 사용자 ID,  TODO : 삭제
+//                String tempUserId = "tempUser";  // 임시 사용자 ID,  TODO : 삭제
 
                 // 체중 데이터 전달, TODO : tempUserId 를 userID로 수정
-                dbHelper.InsertWeight(tempUserId, weight, currentDate);
+                dbHelper.InsertWeight(userID, weight, currentDate);
 
                 Toast.makeText(MainPageActivity.this, "체중값이 저장되었습니다", Toast.LENGTH_SHORT).show();
 
@@ -145,7 +146,7 @@ public class MainPageActivity extends AppCompatActivity {
     }
 
     // TODO : 로그인한 사용자의 userID 가져와야함 -> private void saveWalk(String userID)
-    private void saveWalk() {
+    private void saveWalk(String userID) {
 
         long duration = SystemClock.elapsedRealtime() - startTime;
         String durationTime = formatDuration(duration);
@@ -155,7 +156,7 @@ public class MainPageActivity extends AppCompatActivity {
         String tempUserId = "tempUser"; // 임시 사용자 ID,  TODO : 삭제
 
         // 산책시간 데이터 전달, TODO : tempUserId 를 userID로 수정
-        dbHelper.InsertWalk(tempUserId,durationTime, currentDate);
+        dbHelper.InsertWalk(userID,durationTime, currentDate);
     }
 
     // 현재 날짜를 yyyy-mm-dd 형식 문자열로 변환

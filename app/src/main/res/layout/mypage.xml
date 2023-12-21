@@ -136,7 +136,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="204dp"
+        android:layout_height="95dp"
         android:orientation="horizontal">
 
         <Button
@@ -152,29 +152,28 @@
             android:id="@+id/addButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
+            android:layout_margin="10dp"
             android:background="@drawable/button_round"
             android:text="새로 등록하기" />
 
     </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/menu_bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:itemIconTint="@drawable/selector"
+        app:labelVisibilityMode="unlabeled"
+        app:menu="@menu/main_menu_bottom" />
+
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainPageActivity">
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/menu_bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="bottom"
-            app:labelVisibilityMode="unlabeled"
-            app:menu="@menu/main_menu_bottom"
-            app:itemIconTint="@drawable/selector"/>
+        tools:context=".MyPageActivity">
 
     </RelativeLayout>
 

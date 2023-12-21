@@ -12,8 +12,33 @@ import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DB_VERSION = 3;
-    private static final String DB_NAME = "pet-weight.db";
+    private static final int DB_VERSION = 4;
+    private static final String DB_NAME = "pet.db";
+
+    // User 테이블 정보
+    public static final String TABLE_USER = "userTable";
+    public static final String COLUMN_USER_ID = "userID";
+
+    // scheduleTBL 테이블 정보
+    public static final String TABLE_SCHEDULE = "scheduleTBL";
+    public static final String COLUMN_SCHEDULE_ID = "schedule_id";
+    public static final String COLUMN_SCHEDULE_USER_ID = "userID";  // user_id가 user 테이블의 user_id를 참조
+    public static final String COLUMN_SCHEDULE_DATE = "date";
+    public static final String COLUMN_SCHEDULE_DESCRIPTION = "description";
+
+    // User 테이블 생성 SQL 문
+//    private static final String CREATE_USER_TABLE =
+//            "CREATE TABLE " + TABLE_USER + " (" +
+//                    COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT);";
+
+    // scheduleTBL 테이블 생성 SQL 문
+    private static final String CREATE_SCHEDULE_TABLE =
+            "CREATE TABLE " + TABLE_SCHEDULE + " (" +
+                    COLUMN_SCHEDULE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_SCHEDULE_USER_ID + " INTEGER NOT NULL, " +
+                    COLUMN_SCHEDULE_DATE + " TEXT NOT NULL, " +
+                    COLUMN_SCHEDULE_DESCRIPTION + " TEXT , " +
+                    "FOREIGN KEY(" + COLUMN_SCHEDULE_USER_ID + ") REFERENCES " + TABLE_USER + "(" + COLUMN_USER_ID + "));";
 
     public DBHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -21,10 +46,19 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE userTable (userID CHAR(20) PRIMARY KEY, userPassword CHAR(20))");
+//
+//        // User 테이블 생성
+//        db.execSQL(CREATE_USER_TABLE);
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS petWeight (id INTEGER PRIMARY KEY AUTOINCREMENT, weight REAL NOT NULL, writeDate TEXT NOT NULL)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS petWalk (id INTEGER PRIMARY KEY AUTOINCREMENT , userID TEXT NOT NULL, time TEXT NOT NULL , writeDate TEXT NOT NULL)");
+        // scheduleTBL 테이블 생성
+        db.execSQL(CREATE_SCHEDULE_TABLE);
 
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS petWeight (id INTEGER PRIMARY KEY AUTOINCREMENT, userID CHAR(20), weight REAL NOT NULL, writeDate TEXT NOT NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS petWalk (id INTEGER PRIMARY KEY AUTOINCREMENT , userID CHAR(20) NOT NULL, time TEXT NOT NULL , writeDate TEXT NOT NULL)");
+
+        db.execSQL("CREATE TABLE petTable (petID INTEGER, userID CHAR(20), animal TEXT, petName TEXT, petSex TEXT, petKind TEXT, petBDay TEXT, petAllergy TEXT, uri TEXT);");
     }
 
     @Override

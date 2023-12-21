@@ -1,6 +1,8 @@
 package com.example.myapplication;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,7 +26,7 @@ import com.bumptech.glide.Glide;
 
 public class ChangePetActivity extends AppCompatActivity {
     Button saveAll;
-    MainActivity.petDBHelper petDB;
+    DBHelper petDB = new DBHelper(this);
     SQLiteDatabase sqlDB;
     EditText petName, petKind;
     RadioButton petF, petM;
@@ -40,7 +42,8 @@ public class ChangePetActivity extends AppCompatActivity {
     String bDay;
     String allergies;
     String uri;
-    int userID = 1; // 나중에 가져올 것.
+    int iD = 1; // 나중에 가져올 것.
+    String userID;
     private ActivityResultLauncher<Intent> galleryLauncher;
     ImageButton imageButton;
 
@@ -58,7 +61,7 @@ public class ChangePetActivity extends AppCompatActivity {
         petKind = findViewById(R.id.editPetKind);
         petF = findViewById(R.id.radioFemale);
         petM = findViewById(R.id.radioMale);
-        petDB = new MainActivity.petDBHelper(this);
+        petDB = new DBHelper(this);
         dog = findViewById(R.id.radioDog);
         cat = findViewById(R.id.radioCat);
         neuter = findViewById(R.id.radioNeutered);
@@ -67,6 +70,8 @@ public class ChangePetActivity extends AppCompatActivity {
         imgView = findViewById(R.id.imgView);
         imageButton = findViewById(R.id.btnImg);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        String userID = sharedPreferences.getString("userID","");
         allergy = new CheckBox[11];
         for (int i = 0; i < allergy.length; i++) {
             int checkBoxId = getResources().getIdentifier("ch" + (i + 1), "id", getPackageName());

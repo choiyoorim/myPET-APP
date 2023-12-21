@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
@@ -25,7 +26,7 @@ import com.bumptech.glide.Glide;
 
 public class AddPetActivity extends AppCompatActivity {
     Button saveAll;
-    MainActivity.petDBHelper petDB;
+    DBHelper petDB;
     SQLiteDatabase sqlDB;
     EditText petName, petKind;
     RadioButton petF, petM;
@@ -55,10 +56,12 @@ public class AddPetActivity extends AppCompatActivity {
         petKind = findViewById(R.id.editPetKind);
         petF = findViewById(R.id.radioFemale);
         petM = findViewById(R.id.radioMale);
-        petDB = new MainActivity.petDBHelper(this);
+        petDB = new DBHelper(this);
         imageButton = findViewById(R.id.btnImg);
         imgView = findViewById(R.id.imgView);
-
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        String userID = sharedPreferences.getString("userID","");
+        Toast.makeText(getApplicationContext(),userID,Toast.LENGTH_LONG);
         allergy = new CheckBox[11];
         for (int i = 0; i < allergy.length; i++) {
             int checkBoxId = getResources().getIdentifier("ch" + (i + 1), "id", getPackageName());
@@ -107,7 +110,7 @@ public class AddPetActivity extends AppCompatActivity {
                 }
 
                 sqlDB = petDB.getWritableDatabase();
-                sqlDB.execSQL("INSERT INTO petTable VALUES (" + userID + " , " + userID + ", '" + animal + "', '" + name + "', '" +
+                sqlDB.execSQL("INSERT INTO petTable VALUES (1 , '" + userID + "', '" + animal + "', '" + name + "', '" +
                         sex + "', '" + kind + "', '" + bDay + "', '" + allergies + "', '" + uri + "');");
                 sqlDB.close();
                 Toast.makeText(getApplicationContext(), "등록되었습니다.", Toast.LENGTH_SHORT).show();

@@ -29,6 +29,7 @@ public class CalendarActivity extends AppCompatActivity {
     public Button cha_Btn, del_Btn, save_Btn;
     public TextView diaryTextView, textView2, textView3;
     public EditText contextEditText;
+    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class CalendarActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // 사용자 ID 가져오기 (예시로 SharedPreferences 사용)
                 SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                String userId = sharedPreferences.getString("user_id", "");
+                String userId = sharedPreferences.getString("userID", "");
 
                 // 일정 저장
                 saveDiary(readDay);
@@ -99,7 +100,28 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
+        // 네비게이션 바
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem){
 
+                switch (menuItem.getItemId()){
+                    case R.id.menu_main:
+                        Intent intent = new Intent(getApplicationContext(), MainPageActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.menu_mypage:
+                        // 마이페이지 화면으로 이동
+                        intent = new Intent(getApplicationContext(), MyPageActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.menu_calendar:
+                        break;
+                }
+                return true;
+            }
+
+        });
     }
 
     public void checkDay(int cYear, int cMonth, int cDay) {

@@ -12,10 +12,10 @@ import java.util.List;
 
 public class PetDataManager {
     private SQLiteDatabase database;
-    private CalDBHelper dbHelper;
+    private DBHelper dbHelper;
 
     public PetDataManager(Context context) {
-        dbHelper = new CalDBHelper(context);
+        dbHelper = new DBHelper(context);
     }
 
     // 데이터베이스 열기
@@ -33,11 +33,11 @@ public class PetDataManager {
         // (실제로는 사용자 인증 과정이 필요할 수 있습니다)
         if (isUserExists(user)) {
             ContentValues values = new ContentValues();
-            values.put(CalDBHelper.COLUMN_SCHEDULE_USER_ID, user);
-            values.put(CalDBHelper.COLUMN_SCHEDULE_DATE, date);
-            values.put(CalDBHelper.COLUMN_SCHEDULE_DESCRIPTION, schedule);
+            values.put(DBHelper.COLUMN_SCHEDULE_USER_ID, user);
+            values.put(DBHelper.COLUMN_SCHEDULE_DATE, date);
+            values.put(DBHelper.COLUMN_SCHEDULE_DESCRIPTION, schedule);
 
-            long result = database.insert(CalDBHelper.TABLE_SCHEDULE, null, values);
+            long result = database.insert(DBHelper.TABLE_SCHEDULE, null, values);
 
             if (result == -1) {
                 Log.e("PetDataManager", "일정 추가 실패");
@@ -55,9 +55,9 @@ public class PetDataManager {
         List<String> schedules = new ArrayList<>();
 
         Cursor cursor = database.query(
-                CalDBHelper.TABLE_SCHEDULE,
-                new String[]{CalDBHelper.COLUMN_SCHEDULE_DESCRIPTION},
-                CalDBHelper.COLUMN_SCHEDULE_USER_ID + "=? AND " + CalDBHelper.COLUMN_SCHEDULE_DATE + "=?",
+                DBHelper.TABLE_SCHEDULE,
+                new String[]{DBHelper.COLUMN_SCHEDULE_DESCRIPTION},
+                DBHelper.COLUMN_SCHEDULE_USER_ID + "=? AND " + DBHelper.COLUMN_SCHEDULE_DATE + "=?",
                 new String[]{user, date},
                 null, null, null
         );
@@ -79,9 +79,9 @@ public class PetDataManager {
         List<String> schedules = new ArrayList<>();
 
         Cursor cursor = database.query(
-                CalDBHelper.TABLE_SCHEDULE,
-                new String[]{CalDBHelper.COLUMN_SCHEDULE_DESCRIPTION},
-                CalDBHelper.COLUMN_SCHEDULE_USER_ID + "=?",
+                DBHelper.TABLE_SCHEDULE,
+                new String[]{DBHelper.COLUMN_SCHEDULE_DESCRIPTION},
+                DBHelper.COLUMN_SCHEDULE_USER_ID + "=?",
                 new String[]{user},
                 null, null, null
         );
@@ -100,9 +100,9 @@ public class PetDataManager {
 
     public boolean isUserExists(String user) {
         Cursor cursor = database.query(
-                CalDBHelper.TABLE_USER,
-                new String[]{CalDBHelper.COLUMN_USER_ID},
-                CalDBHelper.COLUMN_USER_ID + "=?",
+                DBHelper.TABLE_USER,
+                new String[]{DBHelper.COLUMN_USER_ID},
+                DBHelper.COLUMN_USER_ID + "=?",
                 new String[]{user},
                 null, null, null
         );

@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -21,7 +23,8 @@ import com.google.android.material.navigation.NavigationBarView;
 import java.io.Serializable;
 
 class Pet implements Serializable {
-    int userID;
+    String userID;
+
     // int userID = userTable.userID; ->이거 커서로 가져와야 할듯?
     int id;
     String name;
@@ -32,7 +35,7 @@ class Pet implements Serializable {
     String allergy;
     String uri;
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 
@@ -65,7 +68,7 @@ class Pet implements Serializable {
     }
     public String getUri() {return uri;}
 
-    public Pet (int userID, String name, String animal, String sex, String kind, String bDay, String allergy, String uri) {
+    public Pet (String userID, String name, String animal, String sex, String kind, String bDay, String allergy, String uri) {
         this.id = 1;
         this.userID = userID;
         this.name = name;
@@ -77,32 +80,35 @@ class Pet implements Serializable {
         this.uri = uri;
     }
 }
+
 public class MyPageActivity extends AppCompatActivity {
-    public static class petDBHelper extends SQLiteOpenHelper {
-        public petDBHelper(Context context)
-        {
-            super(context, "petDB", null, 1);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE petTable  (petID INTEGER, userID INTEGER, animal TEXT, petName TEXT, petSex TEXT, petKind TEXT, petBDay TEXT, petAllergy TEXT, uri TEXT);");
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
-            db.execSQL("DROP TABLE IF EXISTS petDB");
-            onCreate(db);
-        }
-
-    }
+//    public static class petDBHelper extends SQLiteOpenHelper {
+//        public petDBHelper(Context context)
+//        {
+//            super(context, "petDB", null, 1);
+//        }
+//
+//        @Override
+//        public void onCreate(SQLiteDatabase db) {
+//            db.execSQL("CREATE TABLE petTable  (petID INTEGER, userID INTEGER, animal TEXT, petName TEXT, petSex TEXT, petKind TEXT, petBDay TEXT, petAllergy TEXT, uri TEXT);");
+//        }
+//
+//        @Override
+//        public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
+//            db.execSQL("DROP TABLE IF EXISTS petDB");
+//            onCreate(db);
+//        }
+//
+//    }
     Button addButton;
     Button changeButton;
-    petDBHelper petDB;
+    DBHelper petDB;
     TextView mainName, mainSex, mainKind, mainBDay, mainAllergy;
     ImageView imgView;
-    int userID = 1;
+    int id = 1;
     BottomNavigationView bottomNavigationView;
+    String userID;
+
     // 나중에 바꿔야 함.
     @Override
     protected void onResume() {
@@ -129,7 +135,7 @@ public class MyPageActivity extends AppCompatActivity {
 
 
     private boolean isDataExists() {
-        petDB = new petDBHelper(this);
+        petDB = new DBHelper(this);
         SQLiteDatabase db = petDB.getReadableDatabase();
 
         // COUNT 함수를 사용하여 데이터가 있는지 확인
@@ -146,28 +152,32 @@ public class MyPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mypage);
 
-       // bottomNavigationView = findViewById(R.id.menu_bottom_navigation);
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        userID = sharedPreferences.getString("userID", "");
 
-//        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(MenuItem menuItem){
-//                switch (menuItem.getItemId()){
-//                    case R.id.menu_main:
-//                        Intent intent = new Intent(getApplicationContext(),MainPageActivity.class);
-//                        startActivity(intent);
-//                        break;
-//                    case R.id.menu_mypage:
-////                        intent = new Intent(getApplicationContext(), MyPageActivity.class);
-////                        startActivity(intent);
-//                        break;
-//                    case R.id.menu_calendar:
-//                        break;
-//                    case R.id.menu_setting:
-//                        break;
-//                }
-//                return true;}});
+        // 네비게이션 바
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem){
 
-        petDB = new petDBHelper(this);
+                switch (menuItem.getItemId()){
+                    case R.id.menu_main:
+                        Intent intent = new Intent(getApplicationContext(), MainPageActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.menu_mypage:
+                        break;
+                    case R.id.menu_calendar:
+                        intent = new Intent(getApplicationContext(), CalendarActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+                return true;
+            }
+
+        });
+
+        petDB = new DBHelper(this);
         mainName = findViewById(R.id.mainName);
         mainSex = findViewById(R.id.mainSex);
         mainKind = findViewById(R.id.mainKind);
@@ -196,8 +206,8 @@ public class MyPageActivity extends AppCompatActivity {
             }
         });
     }
-    public Pet getSinglePet(int userID) {
-        petDBHelper petDB = new petDBHelper(this);
+    public Pet getSinglePet(String userID) {
+        DBHelper petDB = new DBHelper(this);
         SQLiteDatabase db = petDB.getReadableDatabase();
 
         Pet userPet = null;
@@ -209,7 +219,7 @@ public class MyPageActivity extends AppCompatActivity {
         Cursor cursor = db.query("petTable", columns, selection, selectionArgs, null, null, null, "1");
 
         if (cursor.moveToFirst()) {
-            int petID = cursor.getInt(cursor.getColumnIndexOrThrow("petID"));
+            String user = cursor.getString(cursor.getColumnIndexOrThrow("userID"));
             String animal = cursor.getString(cursor.getColumnIndexOrThrow("animal"));
             String petName = cursor.getString(cursor.getColumnIndexOrThrow("petName"));
             String petSex = cursor.getString(cursor.getColumnIndexOrThrow("petSex"));
@@ -218,7 +228,7 @@ public class MyPageActivity extends AppCompatActivity {
             String petAllergy = cursor.getString(cursor.getColumnIndexOrThrow("petAllergy"));
             String uri = cursor.getString(cursor.getColumnIndexOrThrow("uri"));
 
-            userPet = new Pet(userID, petName, animal, petSex, petKind, petBDay, petAllergy, uri);
+            userPet = new Pet(user, petName, animal, petSex, petKind, petBDay, petAllergy, uri);
         }
 
         cursor.close();

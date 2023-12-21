@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,11 +19,14 @@ public class RecordWeightActivity extends AppCompatActivity {
     private ArrayList<WeightItem> mWeightItems;
     private DBHelper mDBHelper;
     private WeightAdapter nAdapter;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_weight);
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        userID = sharedPreferences.getString("userID", "");
         setInit();
     }
 
@@ -37,7 +42,7 @@ public class RecordWeightActivity extends AppCompatActivity {
         mrv_weight.addItemDecoration(dividerItemDecoration);
 
         String tempUserID = "tempUser"; // 임시 userID 설정 , TODO : userID 연결 이후에 삭제
-        loadRecentDB(tempUserID); // TODO : tempUserID를 제거
+        loadRecentDB(userID); // TODO : tempUserID를 제거
 
     }
 
