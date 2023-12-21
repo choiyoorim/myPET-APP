@@ -146,24 +146,26 @@ public class MyPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mypage);
 
-        bottomNavigationView = findViewById(R.id.menu_bottom_navigation);
+       // bottomNavigationView = findViewById(R.id.menu_bottom_navigation);
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem){
-                switch (menuItem.getItemId()){
-                    case R.id.menu_main:
-                        break;
-                    case R.id.menu_mypage:
-                        Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.menu_calendar:
-                        break;
-                    case R.id.menu_setting:
-                        break;
-                }
-                return true;}});
+//        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(MenuItem menuItem){
+//                switch (menuItem.getItemId()){
+//                    case R.id.menu_main:
+//                        Intent intent = new Intent(getApplicationContext(),MainPageActivity.class);
+//                        startActivity(intent);
+//                        break;
+//                    case R.id.menu_mypage:
+////                        intent = new Intent(getApplicationContext(), MyPageActivity.class);
+////                        startActivity(intent);
+//                        break;
+//                    case R.id.menu_calendar:
+//                        break;
+//                    case R.id.menu_setting:
+//                        break;
+//                }
+//                return true;}});
 
         petDB = new petDBHelper(this);
         mainName = findViewById(R.id.mainName);

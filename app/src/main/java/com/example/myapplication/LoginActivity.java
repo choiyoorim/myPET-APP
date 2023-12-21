@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
                 cursor.moveToFirst();
                 if(cursor.getCount() > 0 && cursor.getString(1).equals(loginuserPassword.getText().toString())){
                     Toast.makeText(getApplicationContext(),"로그인에 성공했습니다.",Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getApplicationContext(),ExampleActivity.class);
+                    Intent intent = new Intent(getApplicationContext(),MainPageActivity.class);
                     startActivity(intent);
                 }
                 else if(cursor.getCount() <=0){

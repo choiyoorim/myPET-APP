@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/rounded_button.xml -->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/purple_500" /> <!-- 버튼의 배경색 -->
+    <corners android:radius="30dp" /> <!-- 모서리의 반지름을 조절하여 둥글게 만듦 -->
+</shape>
+
